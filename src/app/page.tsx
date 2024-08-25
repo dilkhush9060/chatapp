@@ -1,7 +1,10 @@
+import { AuthScreen } from "@/features/auth/components";
+import { api } from "#/convex/_generated/api";
+
 export default function Home() {
   return (
     <>
-      <h1 className="text-2xl text-rose-500 font-bold">Hello World!</h1>
+      <AuthScreen />
     </>
   );
 }
