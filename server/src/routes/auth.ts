@@ -21,4 +21,7 @@ router.post(
   AsyncErrorHandler(authController.verifyMail)
 );
 
+// sign in
+router.post("/signin", AsyncErrorHandler(authController.signIn));
+
 export { router as authRouter };

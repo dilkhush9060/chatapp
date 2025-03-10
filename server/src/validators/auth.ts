@@ -14,3 +14,13 @@ export const signUpSchema = z.object({
     .min(8, { message: "password must be 8 character" })
     .max(30, { message: "password must be 30 character" }),
 });
+
+export const signInSchema = z.object({
+  email: z
+    .string({ required_error: "email is required" })
+    .email({ message: "invalid is required" }),
+  password: z
+    .string({ required_error: "password is required" })
+    .min(8, { message: "password must be 8 character" })
+    .max(30, { message: "password must be 30 character" }),
+});
