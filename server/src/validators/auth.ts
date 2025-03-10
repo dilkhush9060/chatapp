@@ -24,3 +24,18 @@ export const signInSchema = z.object({
     .min(8, { message: "password must be 8 character" })
     .max(30, { message: "password must be 30 character" }),
 });
+
+export const resetPasswordSchema = z.object({
+  otp: z.string({ required_error: "otp is required" }),
+  password: z
+    .string({ required_error: "password is required" })
+    .min(8, { message: "password must be 8 character" })
+    .max(30, { message: "password must be 30 character" }),
+});
+
+export const changePasswordSchema = z.object({
+  password: z
+    .string({ required_error: "password is required" })
+    .min(8, { message: "password must be 8 character" })
+    .max(30, { message: "password must be 30 character" }),
+});

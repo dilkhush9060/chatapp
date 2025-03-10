@@ -11,7 +11,6 @@ declare global {
       id: string;
       role: string;
       email: string;
-      phone: string;
       name: string;
     }
 

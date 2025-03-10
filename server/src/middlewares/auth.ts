@@ -45,7 +45,8 @@ export const TokenMiddleware = async (
   // get token from user  side
   const token =
     request.headers.authorization?.split(" ")[1] ||
-    (request.cookies as Record<string, string>)?.accessToken;
+    (request.cookies as Record<string, string>)?.token;
+
   // check proper  toke exists
   if (!token) {
     return next(new HttpError("unauthorized | token not found", 401));
