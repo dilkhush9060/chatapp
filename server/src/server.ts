@@ -11,7 +11,7 @@ import {
   httpLogger,
   notFoundHandler,
 } from "@/configs";
-import { authRouter } from "@/routes";
+import { authRouter, profileRouter } from "@/routes";
 
 // app init
 const app: Application = express();
@@ -31,6 +31,7 @@ app.get("/", (_: AppRequest, response: AppResponse) => {
 
 // routers
 app.use("/auth", authRouter);
+app.use("/profile", profileRouter);
 
 // 404
 app.use(notFoundHandler);
