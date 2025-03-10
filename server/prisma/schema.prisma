@@ -20,3 +20,13 @@ model User {
 
   @@map("users")
 }
+
+model Message {
+  id         String  @id @default(uuid())
+  text       String?
+  image      String?
+  senderId   String
+  receiverId String
+
+  @@map("messages")
+}
