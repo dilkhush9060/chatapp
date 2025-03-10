@@ -1,0 +1,20 @@
+meta {
+  name: signup
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}/auth/signup
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name":"Rohit Kushwaha",
+    "email":"joker70id@gmail.com",
+    "phone":"9060444206",
+    "password":"Rohit@123"
+  }
+}

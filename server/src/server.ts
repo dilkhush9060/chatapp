@@ -30,7 +30,7 @@ app.get("/", (_: AppRequest, response: AppResponse) => {
 });
 
 // routers
-app.use("/api/auth", authRouter);
+app.use("/auth", authRouter);
 
 // 404
 app.use(notFoundHandler);

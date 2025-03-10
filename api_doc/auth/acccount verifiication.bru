@@ -1,0 +1,17 @@
+meta {
+  name: acccount verifiication
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{BASE_URL}}/auth/account/verification
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email":"joker70id@gmail.com"
+  }
+}

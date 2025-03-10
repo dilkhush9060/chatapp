@@ -3,7 +3,7 @@ import { authHelper } from "@/helpers";
 import { AppNextFunction, AppRequest, AppResponse } from "@/types";
 
 // auth middleware
-export const AuthMiddleware = (
+export const AuthMiddleware = async (
   request: AppRequest,
   _response: AppResponse,
   next: AppNextFunction
@@ -37,7 +37,7 @@ export const AuthMiddleware = (
 };
 
 // token middleware
-export const TokenMiddleware = (
+export const TokenMiddleware = async (
   request: AppRequest,
   _response: AppResponse,
   next: AppNextFunction
@@ -71,7 +71,7 @@ export const TokenMiddleware = (
 };
 
 // refresh token middleware
-export const RefreshTokenMiddleware = (
+export const RefreshTokenMiddleware = async (
   request: AppRequest,
   _response: AppResponse,
   next: AppNextFunction
@@ -105,7 +105,7 @@ export const RefreshTokenMiddleware = (
 };
 
 // admin middleware
-export const AdminMiddleware = (
+export const AdminMiddleware = async (
   request: AppRequest,
   _response: AppResponse,
   next: AppNextFunction
