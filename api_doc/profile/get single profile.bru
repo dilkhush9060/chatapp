@@ -1,11 +1,11 @@
 meta {
-  name: profile
+  name: get single profile
   type: http
-  seq: 1
+  seq: 3
 }
 
 get {
-  url: {{BASE_URL}}/profile
+  url: {{BASE_URL}}/profile/50b3c7b4-16f4-4303-a227-05e1aa224bdb
   body: none
   auth: bearer
 }
@@ -16,6 +16,8 @@ auth:bearer {
 
 body:json {
   {
-    "password":"Rohit@1234"
+    "name":"Rohit Kushwaha",
+    "email":"joker70id@gmail.com",
+    "phone":"9060444202"
   }
 }

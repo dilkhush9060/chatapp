@@ -12,4 +12,17 @@ router.get(
   AsyncErrorHandler(profileController.getProfile)
 );
 
+// update profile
+router.patch(
+  "/",
+  AsyncErrorHandler(AuthMiddleware),
+  AsyncErrorHandler(profileController.updateProfile)
+);
+
+// all profiles
+router.get("/all", AsyncErrorHandler(profileController.getAllProfiles));
+
+// get single profile
+router.get("/:id", AsyncErrorHandler(profileController.getSingleProfile));
+
 export { router as profileRouter };

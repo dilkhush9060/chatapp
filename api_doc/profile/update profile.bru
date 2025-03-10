@@ -1,12 +1,12 @@
 meta {
-  name: profile
+  name: update profile
   type: http
-  seq: 1
+  seq: 4
 }
 
-get {
+patch {
   url: {{BASE_URL}}/profile
-  body: none
+  body: json
   auth: bearer
 }
 
@@ -16,6 +16,8 @@ auth:bearer {
 
 body:json {
   {
-    "password":"Rohit@1234"
+    "name":"Rohit Kushwaha",
+    "email":"joker70id@gmail.com",
+    "phone":"9060444206"
   }
 }
