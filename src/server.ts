@@ -1,6 +1,8 @@
 import path from "node:path";
 import { createServer } from "node:http";
 import express, { Application } from "express";
+import cors from "cors";
+import helmet from "helmet";
 
 // file imports
 import { AppRequest, AppResponse } from "@/types";
@@ -21,6 +23,17 @@ app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "../", "public")));
 app.use(httpLogger);
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+    optionsSuccessStatus: 200,
+    credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    maxAge: 86400,
+  })
+);
+app.use(helmet());
+app.disable("x-powered-by");
 
 // health check
 app.get("/", (_: AppRequest, response: AppResponse) => {

@@ -1,9 +1,10 @@
 import { AsyncErrorHandler } from "@/configs";
 import { profileController } from "@/controllers";
-import { AuthMiddleware, picMiddleware } from "@/middlewares";
+import { AuthMiddleware, limiter, picMiddleware } from "@/middlewares";
 import { Router } from "express";
 
 const router = Router();
+router.use(limiter(60, 10));
 
 // get profile
 router.get(

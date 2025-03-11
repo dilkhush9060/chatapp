@@ -1,9 +1,10 @@
 import { AsyncErrorHandler } from "@/configs";
 import { authController } from "@/controllers";
-import { AuthMiddleware, TokenMiddleware } from "@/middlewares";
+import { AuthMiddleware, limiter, TokenMiddleware } from "@/middlewares";
 import { Router } from "express";
 
 const router = Router();
+router.use(limiter(60, 10));
 
 // sing up
 router.post("/signup", AsyncErrorHandler(authController.signUp));
