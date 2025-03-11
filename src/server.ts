@@ -26,7 +26,7 @@ app.use(httpLogger);
 app.get("/", (_: AppRequest, response: AppResponse) => {
   response
     .status(200)
-    .json({ status: "ok", statusCode: 200, message: "server is running" });
+    .json({ success: true, statusCode: 200, message: "server is running" });
 });
 
 // routers
