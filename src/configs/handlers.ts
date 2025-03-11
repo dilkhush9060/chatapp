@@ -15,13 +15,20 @@ type AsyncHandler = (
   next: AppNextFunction
 ) => Promise<unknown>;
 
-export const AsyncErrorHandler = (function_: AsyncHandler) => {
+export const AsyncErrorHandler = (function_: AsyncHandler | any) => {
   return (
     request: AppRequest,
     response: AppResponse,
     next: AppNextFunction
-  ): void => {
-    Promise.resolve(function_(request, response, next)).catch(next);
+  ) => {
+    try {
+      const result = function_(request, response, next);
+      if (result instanceof Promise) {
+        result.catch(next);
+      }
+    } catch (error) {
+      next(error);
+    }
   };
 };
 

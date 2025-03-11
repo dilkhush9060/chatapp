@@ -2,6 +2,7 @@ import { prisma } from "@/database";
 import { HttpError } from "@/configs";
 import { profileSchema } from "@/validators";
 import { AppNextFunction, AppRequest, AppResponse } from "@/types";
+import fs from "node:fs";
 
 class ProfileController {
   // get profile
@@ -17,6 +18,15 @@ class ProfileController {
       where: {
         email: userData?.email,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        image: true,
+        isVerified: true,
+        imageUrl: true,
+      },
     });
 
     if (!profile) {
@@ -28,13 +38,7 @@ class ProfileController {
       success: true,
       message: "profile found",
       data: {
-        profile: {
-          id: profile.id,
-          name: profile.name,
-          email: profile.email,
-          phone: profile.phone,
-          image: profile.image,
-        },
+        profile,
       },
     });
   };
@@ -90,6 +94,62 @@ class ProfileController {
     });
   };
 
+  // upload profile picture
+  updateProfilePicture = async (
+    req: AppRequest,
+    res: AppResponse,
+    next: AppNextFunction
+  ) => {
+    const userData = req.user;
+    const file = req.file;
+
+    if (!file) {
+      return next(new HttpError("please select a file", 400));
+    }
+
+    // check profile
+    const profile = await prisma.user.findFirst({
+      where: {
+        email: userData?.email,
+      },
+    });
+
+    if (!profile) {
+      return next(new HttpError("profile not found", 404));
+    }
+
+    if (profile.image) {
+      // delete logic
+      fs.unlinkSync(`public/${profile.image}`);
+    }
+
+    const updatedProfile = await prisma.user.update({
+      where: {
+        email: profile.email,
+      },
+      data: {
+        image: file.filename,
+        imageUrl: `http://localhost:5000/${file.filename}`,
+      },
+    });
+
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: "profile updated",
+      data: {
+        profile: {
+          id: updatedProfile.id,
+          name: updatedProfile.name,
+          email: updatedProfile.email,
+          phone: updatedProfile.phone,
+          image: updatedProfile.image,
+          imageUrl: updatedProfile.imageUrl,
+        },
+      },
+    });
+  };
+
   //all profile
   getAllProfiles = async (
     _req: AppRequest,
@@ -108,6 +168,7 @@ class ProfileController {
         phone: true,
         image: true,
         isVerified: true,
+        imageUrl: true,
       },
     });
 
@@ -143,6 +204,7 @@ class ProfileController {
         email: true,
         phone: true,
         image: true,
+        imageUrl: true,
         isVerified: true,
       },
     });

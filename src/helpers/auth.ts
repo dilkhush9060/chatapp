@@ -1,6 +1,6 @@
 import { IAuthHelper } from "@/types/helpers";
 import jwt, { JwtPayload, SignOptions } from "jsonwebtoken";
-import * as argon from "argon2";
+import bcrypt from "bcryptjs";
 
 export class AuthHelper implements IAuthHelper {
   signToken(payload: JwtPayload, secret: string, options: SignOptions): string {
@@ -12,11 +12,12 @@ export class AuthHelper implements IAuthHelper {
   }
 
   async signHash(data: string): Promise<string> {
-    return await argon.hash(data);
+    const salt = bcrypt.genSaltSync(12);
+    return await bcrypt.hash(data, salt);
   }
 
   async verifyHash(data: string, hashData: string): Promise<boolean> {
-    return await argon.verify(hashData, data);
+    return await bcrypt.compare(data, hashData);
   }
 }
 

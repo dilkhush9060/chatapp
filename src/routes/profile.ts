@@ -1,6 +1,6 @@
 import { AsyncErrorHandler } from "@/configs";
 import { profileController } from "@/controllers";
-import { AuthMiddleware } from "@/middlewares";
+import { AuthMiddleware, picMiddleware } from "@/middlewares";
 import { Router } from "express";
 
 const router = Router();
@@ -17,6 +17,14 @@ router.patch(
   "/",
   AsyncErrorHandler(AuthMiddleware),
   AsyncErrorHandler(profileController.updateProfile)
+);
+
+// update profile
+router.patch(
+  "/picture",
+  AsyncErrorHandler(AuthMiddleware),
+  AsyncErrorHandler(picMiddleware.single("file")),
+  AsyncErrorHandler(profileController.updateProfilePicture)
 );
 
 // all profiles

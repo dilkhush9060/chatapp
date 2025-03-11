@@ -96,7 +96,7 @@ class AuthController {
     });
 
     if (!user) {
-      return next(new HttpError("account not exists", 400));
+      return next(new HttpError("account not exists", 404));
     }
 
     if (user.isVerified) {
@@ -223,7 +223,7 @@ class AuthController {
       },
     });
     if (!user) {
-      return next(new HttpError("account not exists", 400));
+      return next(new HttpError("account not exists", 404));
     }
 
     // account verification
@@ -232,7 +232,8 @@ class AuthController {
     }
 
     // password match
-    const isMatch = authHelper.verifyHash(data.password, user.password);
+    const isMatch = await authHelper.verifyHash(data.password, user.password);
+
     if (!isMatch) {
       return next(new HttpError("invalid credentials", 400));
     }
@@ -309,7 +310,7 @@ class AuthController {
       },
     });
     if (!user) {
-      return next(new HttpError("account not exists", 400));
+      return next(new HttpError("account not exists", 404));
     }
 
     // account verification
@@ -381,7 +382,7 @@ class AuthController {
     });
 
     if (!user) {
-      return next(new HttpError("account not exists", 400));
+      return next(new HttpError("account not exists", 404));
     }
 
     // check otp
@@ -439,7 +440,7 @@ class AuthController {
     });
 
     if (!existing) {
-      return next(new HttpError("account not exists", 400));
+      return next(new HttpError("account not exists", 404));
     }
 
     // hash password
