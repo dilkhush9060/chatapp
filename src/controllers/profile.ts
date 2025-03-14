@@ -23,9 +23,9 @@ class ProfileController {
         name: true,
         email: true,
         phone: true,
-        image: true,
+        profileImage: true,
         isVerified: true,
-        imageUrl: true,
+        profileImageUrl: true,
       },
     });
 
@@ -88,7 +88,7 @@ class ProfileController {
           name: updatedProfile.name,
           email: updatedProfile.email,
           phone: updatedProfile.phone,
-          image: updatedProfile.image,
+          profileImageUrl: updatedProfile.profileImageUrl,
         },
       },
     });
@@ -118,9 +118,9 @@ class ProfileController {
       return next(new HttpError("profile not found", 404));
     }
 
-    if (profile.image) {
+    if (profile.profileImage) {
       // delete logic
-      fs.unlinkSync(`public/${profile.image}`);
+      fs.unlinkSync(`public/${profile.profileImage}`);
     }
 
     const updatedProfile = await prisma.user.update({
@@ -128,8 +128,8 @@ class ProfileController {
         email: profile.email,
       },
       data: {
-        image: file.filename,
-        imageUrl: `http://localhost:5000/${file.filename}`,
+        profileImage: file.filename,
+        profileImageUrl: `http://localhost:5000/${file.filename}`,
       },
     });
 
@@ -143,8 +143,8 @@ class ProfileController {
           name: updatedProfile.name,
           email: updatedProfile.email,
           phone: updatedProfile.phone,
-          image: updatedProfile.image,
-          imageUrl: updatedProfile.imageUrl,
+          profileImage: updatedProfile.profileImage,
+          profileImageUrl: updatedProfile.profileImageUrl,
         },
       },
     });
@@ -166,9 +166,9 @@ class ProfileController {
         name: true,
         email: true,
         phone: true,
-        image: true,
+        profileImageUrl: true,
         isVerified: true,
-        imageUrl: true,
+        profileImage: true,
       },
     });
 
@@ -203,8 +203,8 @@ class ProfileController {
         name: true,
         email: true,
         phone: true,
-        image: true,
-        imageUrl: true,
+        profileImage: true,
+        profileImageUrl: true,
         isVerified: true,
       },
     });

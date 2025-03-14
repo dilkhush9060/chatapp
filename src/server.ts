@@ -2,7 +2,8 @@ import path from "node:path";
 import { createServer } from "node:http";
 import express, { Application } from "express";
 import cors from "cors";
-import helmet from "helmet";
+import YAML from "yamljs";
+import { apiReference } from "@scalar/express-api-reference";
 
 // file imports
 import { AppRequest, AppResponse } from "@/types";
@@ -25,14 +26,13 @@ app.use(express.static(path.join(__dirname, "../", "public")));
 app.use(httpLogger);
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173", "*"],
     optionsSuccessStatus: 200,
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
     maxAge: 86400,
   })
 );
-app.use(helmet());
 app.disable("x-powered-by");
 
 // health check
@@ -41,6 +41,21 @@ app.get("/", (_: AppRequest, response: AppResponse) => {
     .status(200)
     .json({ success: true, statusCode: 200, message: "server is running" });
 });
+
+// Serve Swagger documentation
+const swaggerDocument = YAML.load(path.join(__dirname, "./docs/docs.yml"));
+// docs
+app.use(
+  "/docs",
+  //@ts-ignore
+  apiReference({
+    theme: "kepler",
+    spec: {
+      content: swaggerDocument,
+    },
+    customCss: `* { font-family: "Poppins", cursive, sans-serif; }`,
+  })
+);
 
 // routers
 app.use("/auth", authRouter);

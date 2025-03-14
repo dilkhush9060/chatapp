@@ -1,7 +1,6 @@
 {
-    "ext": "ts,env,json,yaml",
-    "watch": [".", ".env"],
-    "ignore": ["dist", "node_modules"],
-    "exec": "tsx --tsconfig tsconfig.json src/server.ts"
+  "ext": "ts,env,json,yml",
+  "watch": [".", ".env"],
+  "ignore": ["dist", "node_modules"],
+  "exec": "tsx --tsconfig tsconfig.json src/server.ts"
 }
-

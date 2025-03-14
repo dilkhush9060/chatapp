@@ -1,0 +1,135 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: Social Media Docs
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: rohitworks88@gmail.com
+    url: https://example.com/support
+
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+  - url: https://api.example.com
+    description: Production server
+
+tags:
+  - name: Greetings
+    description: Endpoints related to greetings
+  - name: User
+    description: User-related endpoints
+
+paths:
+  /hello:
+    get:
+      tags:
+        - Greetings
+      summary: Returns a greeting message
+      operationId: getHello
+      parameters:
+        - $ref: "#/components/parameters/nameParam"
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessGreeting"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+
+  /user/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get user details by ID
+      operationId: getUser
+      parameters:
+        - $ref: "#/components/parameters/userIdParam"
+      security:
+        - BearerAuth: []
+        - CookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/SuccessUser"
+        "404":
+          description: User not found
+
+components:
+  schemas:
+    GreetingResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Hello, John!"
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 123
+        name:
+          type: string
+          example: "John Doe"
+        email:
+          type: string
+          example: "john.doe@example.com"
+
+  parameters:
+    nameParam:
+      name: name
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Name of the person to greet
+
+    userIdParam:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: ID of the user
+
+  responses:
+    SuccessGreeting:
+      description: Successful greeting response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/GreetingResponse"
+
+    SuccessUser:
+      description: Successful user response
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/UserResponse"
+
+    BadRequest:
+      description: Bad request, invalid parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Invalid request"
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+    CookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionId
+
+security:
+  - BearerAuth: []
+  - CookieAuth: []

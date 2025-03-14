@@ -8,18 +8,33 @@ datasource db {
 }
 
 model User {
-  id         String  @id @default(uuid())
-  name       String
-  email      String  @unique
-  password   String
-  phone      String?
-  image      String?
-  imageUrl   String?
-  token      String?
-  otp        String?
-  isVerified Boolean @default(false)
+  id               String    @id @default(uuid())
+  name             String
+  email            String    @unique
+  password         String
+  phone            String?
+  profileImage     String?
+  profileImageUrl  String?
+  token            String?
+  otp              String?
+  isVerified       Boolean   @default(false)
+  messagesSent     Message[] @relation("sentMessages")
+  messagesReceived Message[] @relation("receivedMessages")
+  Feeds            Feed[]    @relation("feedAuthor")
+  Reels            Reel[]    @relation("reelsAuthor")
 
   @@map("users")
+}
+
+model Feed {
+  id       String  @id @default(uuid())
+  image    String?
+  imageUrl String?
+  text     String?
+  authorId String
+  author   User    @relation("feedAuthor", fields: [authorId], references: [id])
+
+  @@map("feeds")
 }
 
 model Message {
@@ -28,6 +43,19 @@ model Message {
   image      String?
   senderId   String
   receiverId String
+  sender     User    @relation("sentMessages", fields: [senderId], references: [id])
+  receiver   User    @relation("receivedMessages", fields: [receiverId], references: [id])
 
   @@map("messages")
+}
+
+model Reel {
+  id       String  @id @default(uuid())
+  video    String?
+  videoUrl String?
+  caption  String?
+  authorId String
+  author   User    @relation("reelsAuthor", fields: [authorId], references: [id])
+
+  @@map("reels")
 }
