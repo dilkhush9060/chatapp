@@ -18,44 +18,54 @@ model User {
   token            String?
   otp              String?
   isVerified       Boolean   @default(false)
+  isSuspended      Boolean   @default(false)
   messagesSent     Message[] @relation("sentMessages")
   messagesReceived Message[] @relation("receivedMessages")
   Feeds            Feed[]    @relation("feedAuthor")
   Reels            Reel[]    @relation("reelsAuthor")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now()) @updatedAt
 
   @@map("users")
 }
 
 model Feed {
-  id       String  @id @default(uuid())
-  image    String?
-  imageUrl String?
-  text     String?
-  authorId String
-  author   User    @relation("feedAuthor", fields: [authorId], references: [id])
+  id        String   @id @default(uuid())
+  image     String?
+  imageUrl  String?
+  text      String?
+  authorId  String
+  author    User     @relation("feedAuthor", fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("feeds")
 }
 
 model Message {
-  id         String  @id @default(uuid())
+  id         String   @id @default(uuid())
   text       String?
   image      String?
   senderId   String
   receiverId String
-  sender     User    @relation("sentMessages", fields: [senderId], references: [id])
-  receiver   User    @relation("receivedMessages", fields: [receiverId], references: [id])
+  sender     User     @relation("sentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("receivedMessages", fields: [receiverId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("messages")
 }
 
 model Reel {
-  id       String  @id @default(uuid())
-  video    String?
-  videoUrl String?
-  caption  String?
-  authorId String
-  author   User    @relation("reelsAuthor", fields: [authorId], references: [id])
+  id          String   @id @default(uuid())
+  video       String?
+  videoUrl    String?
+  caption     String?
+  authorId    String
+  author      User     @relation("reelsAuthor", fields: [authorId], references: [id])
+  isSuspended Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
   @@map("reels")
 }

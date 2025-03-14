@@ -14,7 +14,7 @@ import {
   httpLogger,
   notFoundHandler,
 } from "@/configs";
-import { authRouter, profileRouter } from "@/routes";
+import { authRouter, feedRouter, profileRouter } from "@/routes";
 
 // app init
 const app: Application = express();
@@ -60,6 +60,7 @@ app.use(
 // routers
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
+app.use("/feeds", feedRouter);
 
 // 404
 app.use(notFoundHandler);

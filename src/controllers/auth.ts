@@ -240,7 +240,7 @@ class AuthController {
 
     // generate token
     const accessToken = authHelper.signToken(
-      { name: user.name, email: user.email },
+      { id: user.id, name: user.name, email: user.email },
       myEnvironment.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "1h",
