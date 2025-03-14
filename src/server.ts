@@ -2,8 +2,6 @@ import path from "node:path";
 import { createServer } from "node:http";
 import express, { Application } from "express";
 import cors from "cors";
-import YAML from "yamljs";
-import { apiReference } from "@scalar/express-api-reference";
 
 // file imports
 import { AppRequest, AppResponse } from "@/types";
@@ -15,6 +13,7 @@ import {
   notFoundHandler,
 } from "@/configs";
 import { authRouter, feedRouter, profileRouter } from "@/routes";
+import { swaggerDocs } from "./swagger";
 
 // app init
 const app: Application = express();
@@ -35,27 +34,25 @@ app.use(
 );
 app.disable("x-powered-by");
 
-// health check
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     tags:
+ *       - Health check
+ *     description: Responds if the app is up and running
+ *     responses:
+ *       200:
+ *         description: App is up and running
+ */
 app.get("/", (_: AppRequest, response: AppResponse) => {
   response
     .status(200)
     .json({ success: true, statusCode: 200, message: "server is running" });
 });
 
-// Serve Swagger documentation
-const swaggerDocument = YAML.load(path.join(__dirname, "./docs/docs.yml"));
-// docs
-app.use(
-  "/docs",
-  //@ts-ignore
-  apiReference({
-    theme: "kepler",
-    spec: {
-      content: swaggerDocument,
-    },
-    customCss: `* { font-family: "Poppins", cursive, sans-serif; }`,
-  })
-);
+// swagger docs
+swaggerDocs(app);
 
 // routers
 app.use("/auth", authRouter);

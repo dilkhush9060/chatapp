@@ -25,7 +25,6 @@ model User {
   Reels Reel[] @relation("reelsAuthor")
 
   // follower and following
-
   followers UserFollow[] @relation("UserFollowers")
   following UserFollow[] @relation("UserFollowing")
 
@@ -43,6 +42,7 @@ model UserFollow {
   follower    User   @relation("UserFollowers", fields: [followerId], references: [id])
   following   User   @relation("UserFollowing", fields: [followingId], references: [id])
 
+  // timestamp
   createdAt DateTime @default(now())
 
   @@unique([followerId, followingId])
@@ -50,12 +50,16 @@ model UserFollow {
 }
 
 model Feed {
-  id        String   @id @default(uuid())
-  image     String?
-  imageUrl  String?
-  text      String?
-  authorId  String
-  author    User     @relation("feedAuthor", fields: [authorId], references: [id])
+  id       String  @id @default(uuid())
+  image    String?
+  imageUrl String?
+  text     String?
+
+  //author
+  authorId String
+  author   User   @relation("feedAuthor", fields: [authorId], references: [id])
+
+  // timestamp
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 
@@ -63,27 +67,33 @@ model Feed {
 }
 
 model Message {
-  id         String   @id @default(uuid())
+  id         String  @id @default(uuid())
   text       String?
   image      String?
   senderId   String
   receiverId String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now()) @updatedAt
+
+  // timestamp
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("messages")
 }
 
 model Reel {
-  id          String   @id @default(uuid())
+  id          String  @id @default(uuid())
   video       String?
   videoUrl    String?
   caption     String?
-  authorId    String
-  author      User     @relation("reelsAuthor", fields: [authorId], references: [id])
-  isSuspended Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now()) @updatedAt
+  isSuspended Boolean @default(false)
+
+  //author
+  authorId String
+  author   User   @relation("reelsAuthor", fields: [authorId], references: [id])
+
+  // timestamp
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("reels")
 }
