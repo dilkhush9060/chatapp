@@ -8,25 +8,45 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(uuid())
-  name             String
-  email            String    @unique
-  password         String
-  phone            String?
-  profileImage     String?
-  profileImageUrl  String?
-  token            String?
-  otp              String?
-  isVerified       Boolean   @default(false)
-  isSuspended      Boolean   @default(false)
-  messagesSent     Message[] @relation("sentMessages")
-  messagesReceived Message[] @relation("receivedMessages")
-  Feeds            Feed[]    @relation("feedAuthor")
-  Reels            Reel[]    @relation("reelsAuthor")
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @default(now()) @updatedAt
+  id              String  @id @default(uuid())
+  name            String
+  email           String  @unique
+  password        String
+  phone           String?
+  profileImage    String?
+  profileImageUrl String?
+  token           String?
+  otp             String?
+  isVerified      Boolean @default(false)
+  isSuspended     Boolean @default(false)
+
+  // feeds and reels
+  Feeds Feed[] @relation("feedAuthor")
+  Reels Reel[] @relation("reelsAuthor")
+
+  // follower and following
+
+  followers UserFollow[] @relation("UserFollowers")
+  following UserFollow[] @relation("UserFollowing")
+
+  // timestamp
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@map("users")
+}
+
+model UserFollow {
+  id          String @id @default(uuid())
+  followerId  String
+  followingId String
+  follower    User   @relation("UserFollowers", fields: [followerId], references: [id])
+  following   User   @relation("UserFollowing", fields: [followingId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@map("user_follows")
 }
 
 model Feed {
@@ -48,8 +68,6 @@ model Message {
   image      String?
   senderId   String
   receiverId String
-  sender     User     @relation("sentMessages", fields: [senderId], references: [id])
-  receiver   User     @relation("receivedMessages", fields: [receiverId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now()) @updatedAt
 

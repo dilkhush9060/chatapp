@@ -34,4 +34,11 @@ router.get("/all", AsyncErrorHandler(profileController.getAllProfiles));
 // get single profile
 router.get("/:id", AsyncErrorHandler(profileController.getSingleProfile));
 
+// toggle follow
+router.post(
+  "/:id/follow",
+  AsyncErrorHandler(AuthMiddleware),
+  AsyncErrorHandler(profileController.toggleFollow)
+);
+
 export { router as profileRouter };

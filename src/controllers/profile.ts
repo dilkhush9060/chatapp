@@ -13,32 +13,59 @@ class ProfileController {
   ) => {
     const userData = req.user;
 
-    // check profile
-    const profile = await prisma.user.findFirst({
-      where: {
-        email: userData?.email,
-      },
+    if (!userData) {
+      return next(new HttpError("Unauthorized access", 401));
+    }
+
+    const profile = await prisma.user.findUnique({
+      where: { email: userData.email },
       select: {
         id: true,
         name: true,
         email: true,
         phone: true,
         profileImage: true,
-        isVerified: true,
         profileImageUrl: true,
+        isVerified: true,
+        followers: {
+          select: {
+            follower: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                profileImageUrl: true,
+              },
+            },
+          },
+        },
+        following: {
+          select: {
+            following: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+                profileImageUrl: true,
+              },
+            },
+          },
+        },
       },
     });
 
     if (!profile) {
-      return next(new HttpError("profile not found", 404));
+      return next(new HttpError("Profile not found", 404));
     }
 
     res.status(200).json({
       statusCode: 200,
       success: true,
-      message: "profile found",
+      message: "Profile found",
       data: {
         profile,
+        followers: profile.followers.map((f) => f.follower),
+        following: profile.following.map((f) => f.following),
       },
     });
   };
@@ -192,12 +219,11 @@ class ProfileController {
     res: AppResponse,
     next: AppNextFunction
   ) => {
-    // check profile
-    const profile = await prisma.user.findFirst({
-      where: {
-        id: req.params.id,
-        isVerified: true,
-      },
+    const { id } = req.params;
+
+    // Fetch profile + followers + following in a single query
+    const profile = await prisma.user.findUnique({
+      where: { id: id },
       select: {
         id: true,
         name: true,
@@ -206,21 +232,89 @@ class ProfileController {
         profileImage: true,
         profileImageUrl: true,
         isVerified: true,
+        followers: {
+          select: {
+            follower: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+        following: {
+          select: {
+            following: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
       },
     });
 
     if (!profile) {
-      return next(new HttpError("profile not found", 404));
+      return next(new HttpError("Profile not found", 404));
     }
 
     res.status(200).json({
       statusCode: 200,
       success: true,
-      message: "profile found",
+      message: "Profile found",
       data: {
         profile,
+        followers: profile.followers.map((f) => f.follower), // Extract followers
+        following: profile.following.map((f) => f.following), // Extract following
       },
     });
+  };
+
+  // toggle follow
+  toggleFollow = async (
+    req: AppRequest,
+    res: AppResponse,
+    next: AppNextFunction
+  ) => {
+    const { id: followingId } = req.params;
+    const userData = req.user as Express.User;
+    const followerId = userData.id;
+
+    if (!followingId || !followerId) {
+      return next(new HttpError("User ID is required", 400));
+    }
+
+    if (followerId === followingId) {
+      return next(new HttpError("Self-following is not allowed", 400));
+    }
+
+    // Check if the user is already following
+    const existingFollow = await prisma.userFollow.findUnique({
+      where: { followerId_followingId: { followerId, followingId } },
+    });
+
+    if (existingFollow) {
+      // Unfollow user
+      await prisma.userFollow.delete({
+        where: { followerId_followingId: { followerId, followingId } },
+      });
+      return res.status(200).json({
+        statusCode: 200,
+        success: true,
+        message: "Unfollowed successfully",
+        data: { followingId },
+      });
+    } else {
+      // Follow user
+      await prisma.userFollow.create({
+        data: { followerId, followingId },
+      });
+      return res.status(200).json({
+        statusCode: 200,
+        success: true,
+        message: "Followed successfully",
+        data: { followingId },
+      });
+    }
   };
 }
 
