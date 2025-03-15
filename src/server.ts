@@ -2,6 +2,8 @@ import path from "node:path";
 import { createServer } from "node:http";
 import express, { Application } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import compression from "compression";
 
 // file imports
 import { AppRequest, AppResponse } from "@/types";
@@ -32,19 +34,10 @@ app.use(
     maxAge: 86400,
   })
 );
+app.use(cookieParser());
+app.use(compression());
 app.disable("x-powered-by");
 
-/**
- * @openapi
- * /:
- *   get:
- *     tags:
- *       - Health check
- *     description: Responds if the app is up and running
- *     responses:
- *       200:
- *         description: App is up and running
- */
 app.get("/", (_: AppRequest, response: AppResponse) => {
   response
     .status(200)

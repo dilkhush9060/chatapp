@@ -6,6 +6,7 @@ import {
   AppNextFunction,
   AppErrorRequestHandler,
 } from "@/types";
+import { MulterError } from "multer";
 import { ZodError } from "zod";
 
 // Type for async handler
@@ -60,6 +61,12 @@ export const globalErrorHandler: AppErrorRequestHandler = (
   if (error instanceof ZodError) {
     statusCode = 403;
     message = error.issues[0].message;
+  }
+
+  // multer error
+  if (error instanceof MulterError) {
+    statusCode = 400;
+    message = error.message;
   }
 
   const responseBody = {

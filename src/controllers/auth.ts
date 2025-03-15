@@ -484,6 +484,30 @@ class AuthController {
       message: "password change successful",
     });
   };
+
+  // sign out
+  signOut = (_req: AppRequest, res: AppResponse, _next: AppNextFunction) => {
+    // set cookie
+    res.cookie("accessToken", null, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000,
+    });
+
+    res.cookie("refreshToken", null, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 1000,
+    });
+
+    res.status(200).json({
+      statusCode: 200,
+      success: true,
+      message: "sign out successful",
+    });
+  };
 }
 
 export const authController = new AuthController();
